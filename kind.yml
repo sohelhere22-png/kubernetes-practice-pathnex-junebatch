@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+echo "Starting installation of Docker, kubectl, and kind..."
+echo "-----------------------------------------------------"
+
+# 1. Install Docker
+echo ">>> Installing Docker..."
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+rm get-docker.sh
+echo "Docker installed successfully."
+
+# 2. Install kubectl (Latest stable release)
+echo ">>> Installing kubectl..."
+KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
+curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm kubectl
+echo "kubectl ${KUBECTL_VERSION} installed successfully."
+
+# 3. Install kind (Latest release)
+echo ">>> Installing kind..."
+KIND_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+sudo install -o root -g root -m 0755 kind /usr/local/bin/kind
+rm kind
+echo "kind ${KIND_VERSION} installed successfully."
+
+echo "-----------------------------------------------------"
+echo "Installation Complete!"
+echo "IMPORTANT: To run Docker without sudo, run the following command:"
+echo "  sudo usermod -aG docker \$USER && newgrp docker"
