@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer-role        # Role ka naam
+  namespace: backend          # Sirf is namespace mein valid
+rules:
+- apiGroups: [""]             # "" matlab core API group (Pods, Services)
+  resources: ["pods", "services"]  # Kis resource pe
+  verbs: ["get", "list", "create", "delete", "update"]  # Kya kar sakta hai
+  
+- apiGroups: ["apps"]         # Deployments ke liye alag group
+  resources: ["deployments"]
+  verbs: ["get", "list", "create", "update"]
